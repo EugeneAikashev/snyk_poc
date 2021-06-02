@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build a Docker image
-      run: docker build -t flask-test:latest app/.
+    # - name: Build a Docker image
+    #   run: docker build -t flask-test:latest app/.
     - name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/docker@master
@@ -14,4 +14,8 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         image: flask-test:latest
-        args: --file=app/Dockerfile
+        args: --file=app/Dockerfile --severity-threshold=low
+    - name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
