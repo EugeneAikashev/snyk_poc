@@ -14,4 +14,4 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         image: flask-test:latest
-        args: --file=Dockerfile
+        args: --file=app/Dockerfile
