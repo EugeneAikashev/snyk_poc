@@ -1,13 +1,17 @@
-name: Example workflow for Python using Snyk
+name: Snyk Container
 on: push
 jobs:
-  security:
+  snyk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/python-3.8@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=low
+    - uses: actions/checkout@v2
+    - name: Build a Docker image
+      run: docker build -t flask-test:latest .
+    - name: Run Snyk to check Docker image for vulnerabilities
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: flask-test:latest
+        args: --file=Dockerfile
